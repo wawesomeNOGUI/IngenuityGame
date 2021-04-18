@@ -93,10 +93,13 @@ var render = function () {
     //context.fillRect(0, 0, width, height);
 
     // Create sky gradient
-    var grd = context.createLinearGradient(canvas.width/2, canvas.height+scroll, canvas.width/2, -1025);
+    //var grd = context.createLinearGradient(canvas.width/2, canvas.height+scroll, canvas.width/2, -1025);
+    var grd = context.createRadialGradient(canvas.width/2, canvas.height+scroll, canvas.width, canvas.width/2, canvas.height+scroll, 34700);
     grd.addColorStop(0, "#FBE5C3");
     grd.addColorStop(0.5, "#FCB398");
-    grd.addColorStop(1, "#00031f");
+    grd.addColorStop(0.9, "#7d3e10");
+    grd.addColorStop(0.95, "#00031f");
+  //  grd.addColorStop(1, "#00031f");
     context.fillStyle = grd;
 
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -135,19 +138,23 @@ var update = function () {
 
     if(started) {
       if(velocity.y < 50){
-        velocity.y += 0.5;
+        velocity.y += 0.4;
       }
 
       if(velocity.x > 0){
-       velocity.x --;
+       velocity.x -= 0.2;
       }if(velocity.x < 0){
-       velocity.x ++;
+       velocity.x += 0.2;
       }
       //Resolve movement
       pX += velocity.x;
 
       if(scroll >= velocity.y && pY < canvas.height/5){
-        scroll -= velocity.y;
+        if(scroll -velocity.y < 33000){
+          scroll -= velocity.y;
+        }else{  //hit top o space
+          velocity.y = 15;
+        }
       }else{
         pY += velocity.y;
       }
@@ -200,12 +207,16 @@ function keyPress1() {
   for  (var key in keysDown) {
      var value = Number(key);
         if (value == 68) {
-            pX += 4;
+          if(velocity.x < 100 && started){
+            velocity.x += 2;
+          }
         } else if (value == 65) {
-            pX -= 4;
+            if(velocity.x > -100 && started){
+              velocity.x -= 2;
+            }
         } else if (value==87) {
           started = true;
-          if(velocity.y > -200){
+          if(velocity.y > -100){
             velocity.y -= 2.5;
           }
           //console.log(scroll)
