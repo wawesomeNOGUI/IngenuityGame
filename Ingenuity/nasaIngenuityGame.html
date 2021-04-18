@@ -47,6 +47,16 @@ var scrollAmount = 10;
 //=====Images======
 var pImg = new Image();
     pImg.src = './ingenuity.png';
+var pImg2 = new Image();
+    pImg2.src = './ingenuity2.png';
+var pImg3 = new Image();
+    pImg3.src = './ingenuity3.png';
+
+var pImgArr = [pImg, pImg2, pImg3, pImg2];
+
+var animationCounter = 0;
+var whichPic = 0;
+
 
 var p2Img = new Image();
     p2Img.src = 'https://www.tradingcardmint.com/wp-content/uploads/2017/07/IOC-004-Big-Koala-COMMON.jpg';
@@ -125,7 +135,7 @@ var render = function () {
     if(destroyed){
       context.drawImage(explodeImg, pX, pY, pWidth, pHeight);
     }else{
-      context.drawImage(pImg, pX, pY, pWidth, pHeight);
+      context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
 
@@ -163,21 +173,21 @@ var update = function () {
     if(pX <= 0){
       pX = 0;
       velocity.x = 25;
-    }else if (pX >= canvas.width- pImg.width ){
-	     pX = canvas.width- pImg.width;
+    }else if (pX >= canvas.width- pWidth ){
+	     pX = canvas.width- pWidth;
        velocity.x = -25;
     }
 
 
-    if(pY + pImg.height >= canvas.height-canvas.height/5 && velocity.y > 20){
-        pY = canvas.height-canvas.height/5 - pImg.height;  //bottom fifth of the screen
+    if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20){
+        pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
         velocity.y = 0;
         velocity.y -= 15;
         destroyed = true;
         shakeEffect();
         console.log("crash");
-    }else if(pY + pImg.height >= canvas.height-canvas.height/5){
-      pY = canvas.height-canvas.height/5 - pImg.height;
+    }else if(pY + pHeight >= canvas.height-canvas.height/5){
+      pY = canvas.height-canvas.height/5 - pHeight;
       velocity.y = 0;
     }
 /*
@@ -210,14 +220,41 @@ function keyPress1() {
           if(velocity.x < 100 && started){
             velocity.x += 2;
           }
+          animationCounter++;
+          if(animationCounter == 2){
+            if(whichPic < pImgArr.length-1){
+              whichPic++;
+            }else{
+              whichPic = 0;
+            }
+            animationCounter = 0;
+          }
         } else if (value == 65) {
             if(velocity.x > -100 && started){
               velocity.x -= 2;
+            }
+            animationCounter++;
+            if(animationCounter == 2){
+              if(whichPic < pImgArr.length-1){
+                whichPic++;
+              }else{
+                whichPic = 0;
+              }
+              animationCounter = 0;
             }
         } else if (value==87) {
           started = true;
           if(velocity.y > -100){
             velocity.y -= 2.5;
+          }
+          animationCounter++;
+          if(animationCounter == 2){
+            if(whichPic < pImgArr.length-1){
+              whichPic++;
+            }else{
+              whichPic = 0;
+            }
+            animationCounter = 0;
           }
           //console.log(scroll)
         } else if (value==83) {
