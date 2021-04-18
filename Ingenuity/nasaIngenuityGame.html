@@ -1,0 +1,279 @@
+<html>
+<head>
+<title>Zooooom</title>
+</head>
+<body>
+    <style>
+        body {margin: 0px;}
+        body {padding: 0px;}
+    </style>
+<script>
+var animate = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+        window.setTimeout(callback, 1000/60)
+    };
+var canvas = document.createElement("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var context = canvas.getContext('2d');
+context.imageSmoothingEnabled = true;
+
+//Make Stars
+var stars = [];
+for (var i = 0; i<34000; i++){
+  if(Math.floor(Math.random() * 100) == 0){
+    stars.push([ Math.floor(Math.random() * canvas.width), -1*Math.floor(Math.random() * canvas.height + i)]);
+  }else{
+    stars.push([-1,-1]);
+  }
+}
+console.log(stars);
+
+var pX = 200;
+var pY = canvas.height-canvas.height/5;
+var pWidth = 280;
+var pHeight = 180;
+var destroyed = false;
+var velocity = {
+    x: 0,
+    y: 0
+};
+
+var started = false;
+
+var scroll = 0;
+var scrollAmount = 10;
+
+
+//=====Images======
+var pImg = new Image();
+    pImg.src = './ingenuity.png';
+
+var p2Img = new Image();
+    p2Img.src = 'https://www.tradingcardmint.com/wp-content/uploads/2017/07/IOC-004-Big-Koala-COMMON.jpg';
+
+var explodeImg = new Image();
+    explodeImg.src = './explodeImg.png';
+
+var mars = new Image();
+    mars.src = './mars.png'
+
+//=================
+
+var keysDown = {};
+
+var shakes = 25;
+var shakeAmount = 5;
+var counter = 0;
+var shakeInt;
+var shaking = false;
+function shake(){
+    if(counter == shakes){
+        clearInterval(shakeInt);
+        context.setTransform(1,0,0,1,0,0);
+        shaking = false;
+        counter = 0;
+        return;
+    }
+
+    shakeAmount = shakeAmount * -1;
+    context.setTransform(1,0,0,1, shakeAmount , 0);
+    counter++;
+}
+
+function shakeEffect(){
+   if(!shaking){  //e = horizontal translation
+       shakeInt = setInterval(shake, 10);
+       shaking = true;
+   }
+}
+
+
+var render = function () {
+    //context.fillStyle = "#FF00FF";
+    //context.fillRect(0, 0, width, height);
+
+    // Create sky gradient
+    var grd = context.createLinearGradient(canvas.width/2, canvas.height+scroll, canvas.width/2, -1025);
+    grd.addColorStop(0, "#FBE5C3");
+    grd.addColorStop(0.5, "#FCB398");
+    grd.addColorStop(1, "#00031f");
+    context.fillStyle = grd;
+
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    //Mars Background
+    context.drawImage(mars, 0, scroll, canvas.width, canvas.height);
+
+    //Draw Stars
+    context.fillStyle = "#FFFFFF";
+    if(scroll>canvas.height*2){
+      for(var i = Math.floor(scroll)-canvas.height*2; i<Math.floor(scroll)+canvas.height && Math.floor(scroll)+canvas.height < stars.length; i++){
+        if(stars[i][0] != -1){
+          context.fillRect(stars[i][0], stars[i][1]+Math.floor(scroll), 5, 5);
+          //console.log(stars[Math.floor(i)][0])
+        }
+      }
+
+    }
+
+
+    //Ingenuity
+    //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
+    if(destroyed){
+      context.drawImage(explodeImg, pX, pY, pWidth, pHeight);
+    }else{
+      context.drawImage(pImg, pX, pY, pWidth, pHeight);
+    }
+
+
+
+};
+
+var update = function () {
+    keyPress1();
+    //keyPress2();
+
+    if(started) {
+      if(velocity.y < 50){
+        velocity.y += 0.5;
+      }
+
+      if(velocity.x > 0){
+       velocity.x --;
+      }if(velocity.x < 0){
+       velocity.x ++;
+      }
+      //Resolve movement
+      pX += velocity.x;
+
+      if(scroll >= velocity.y && pY < canvas.height/5){
+        scroll -= velocity.y;
+      }else{
+        pY += velocity.y;
+      }
+    }
+
+    if(pX <= 0){
+      pX = 0;
+      velocity.x = 25;
+    }else if (pX >= canvas.width- pImg.width ){
+	     pX = canvas.width- pImg.width;
+       velocity.x = -25;
+    }
+
+
+    if(pY + pImg.height >= canvas.height-canvas.height/5 && velocity.y > 20){
+        pY = canvas.height-canvas.height/5 - pImg.height;  //bottom fifth of the screen
+        velocity.y = 0;
+        velocity.y -= 15;
+        destroyed = true;
+        shakeEffect();
+        console.log("crash");
+    }else if(pY + pImg.height >= canvas.height-canvas.height/5){
+      pY = canvas.height-canvas.height/5 - pImg.height;
+      velocity.y = 0;
+    }
+/*
+    else if(pY <= canvas.height/5){
+        pY = canvas.height/5;
+        scroll -= velocity.y;
+        //velocity.y = 0;
+        //context.setTransform(1,0,0,1, 0, 0);
+    }else if(pY >= canvas.height - 300 - pImg.height && pY <= canvas.height/5 && scroll >= velocity.y){
+        scroll -= velocity.y;
+        pY = canvas.height - 300 - pImg.height;
+    }
+*/
+
+};
+
+
+var step = function () {
+    update();
+    render();
+    animate(step);
+};
+
+
+
+function keyPress1() {
+  for  (var key in keysDown) {
+     var value = Number(key);
+        if (value == 68) {
+            pX += 4;
+        } else if (value == 65) {
+            pX -= 4;
+        } else if (value==87) {
+          started = true;
+          if(velocity.y > -200){
+            velocity.y -= 2.5;
+          }
+          //console.log(scroll)
+        } else if (value==83) {
+
+} else {
+            //this.paddle.move(0, 0);
+        }
+    }
+};
+
+
+
+
+function keyPress2() {
+    for (var key in keysDown) {
+        var value = Number(key);
+        if (value == 37) {
+            p2X -= 4;
+        } else if (value == 39) {
+            p2X += 4;
+        } else if (value==38) {
+            if(jumpSpeed2>0){
+                p2Y -= jumpSpeed2;
+                jumpSpeed2--;
+                jumped2 = true;
+            }else{
+                jumpSpeed2 =0;
+                velocity.y = 1;
+            }
+        } else if (value==40) {
+            p2Y += 4;
+} else {
+            //this.paddle.move(0, 0);
+        }
+    }
+};
+
+window.onload = function(){
+
+document.body.appendChild(canvas);
+animate(step);
+}
+
+window.addEventListener("keydown", function (event) {
+    keysDown[event.keyCode] = true;
+});
+
+
+window.addEventListener("keyup", function (event) {
+    delete keysDown[event.keyCode];
+
+    //87 player 1 (W)
+    if (event.keyCode == 87){
+
+    }
+
+    //38 player 2 (up arrow)
+    if(event.keyCode == 38) {
+
+    }
+});
+
+window.addEventListener("resize", function(e){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
