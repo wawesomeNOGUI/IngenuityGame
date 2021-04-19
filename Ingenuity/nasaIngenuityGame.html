@@ -159,7 +159,17 @@ var update = function () {
       //Resolve movement
       pX += velocity.x;
 
-      if(scroll >= velocity.y && pY < canvas.height/5){
+      if(pX <= 0){
+        pX = 0;
+        velocity.x = 0;
+      }else if (pX >= canvas.width- pWidth ){
+  	     pX = canvas.width- pWidth;
+         velocity.x = 0;
+      }
+
+      if(scroll >= velocity.y && pY < canvas.height/5 && scroll < 50){  //hit sky after being on ground
+        scroll -= velocity.y;
+      }else if(scroll >= 50){          //is in sky
         if(scroll -velocity.y < 33000){
           scroll -= velocity.y;
         }else{  //hit top o space
@@ -170,18 +180,11 @@ var update = function () {
       }
     }
 
-    if(pX <= 0){
-      pX = 0;
-      velocity.x = 0;
-    }else if (pX >= canvas.width- pWidth ){
-	     pX = canvas.width- pWidth;
-       velocity.x = 0;
-    }
-
-
+    //Landing Logic
     if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20){
         pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
         velocity.y = 0;
+        velocity.x = 0;
         velocity.y -= 15;
         destroyed = true;
         shakeEffect();
@@ -217,7 +220,7 @@ var step = function () {
 function keyPress1() {
   for  (var key in keysDown) {
      var value = Number(key);
-        if (value == 68) {
+        if (value == 68 || value == 39) {
           if(velocity.x < 100 && started){
             velocity.x += 2;
           }
@@ -230,7 +233,7 @@ function keyPress1() {
             }
             animationCounter = 0;
           }
-        } else if (value == 65) {
+        } else if (value == 65 || value == 37) {
             if(velocity.x > -100 && started){
               velocity.x -= 2;
             }
@@ -243,7 +246,7 @@ function keyPress1() {
               }
               animationCounter = 0;
             }
-        } else if (value==87) {
+        } else if (value==87 || value == 38) {
           started = true;
           if(velocity.y > -15){
             velocity.y -= 2.5;
