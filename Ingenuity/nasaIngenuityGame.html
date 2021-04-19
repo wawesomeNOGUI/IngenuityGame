@@ -147,8 +147,8 @@ var update = function () {
     //keyPress2();
 
     if(started) {
-      if(velocity.y < 50){
-        velocity.y += 0.5;
+      if(velocity.y < 40){
+        velocity.y += 0.3;
       }
 
       if(velocity.x > 0){
@@ -189,6 +189,7 @@ var update = function () {
     }else if(pY + pHeight >= canvas.height-canvas.height/5){
       pY = canvas.height-canvas.height/5 - pHeight;
       velocity.y = 0;
+      velocity.x = 0;
     }
 /*
     else if(pY <= canvas.height/5){
@@ -244,7 +245,7 @@ function keyPress1() {
             }
         } else if (value==87) {
           started = true;
-          if(velocity.y > -100){
+          if(velocity.y > -15){
             velocity.y -= 2.5;
           }
           animationCounter++;
