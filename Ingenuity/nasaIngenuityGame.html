@@ -148,7 +148,7 @@ var update = function () {
 
     if(started) {
       if(velocity.y < 50){
-        velocity.y += 0.4;
+        velocity.y += 0.5;
       }
 
       if(velocity.x > 0){
@@ -172,10 +172,10 @@ var update = function () {
 
     if(pX <= 0){
       pX = 0;
-      velocity.x = 25;
+      velocity.x = 0;
     }else if (pX >= canvas.width- pWidth ){
 	     pX = canvas.width- pWidth;
-       velocity.x = -25;
+       velocity.x = 0;
     }
 
 
