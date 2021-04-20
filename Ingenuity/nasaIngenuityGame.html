@@ -174,7 +174,12 @@ var update = function () {
       }else if(scroll >= 50 && scroll < transitionTime){  //starting to fly up in sky, transition to bottom o screen
           scroll -= velocity.y;
           //Get percentage to move player up or down by for smooth transition
-          pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
+          if(pY > (canvas.height*0.60231921703)){
+            pY = (canvas.height*0.60231921703);
+          }else{
+            pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
+          }
+
       }else if(scroll >= transitionTime){  //is in sky
         if(scroll -velocity.y < 33000){
           scroll -= velocity.y;
@@ -200,17 +205,12 @@ var update = function () {
       velocity.y = 0;
       velocity.x = 0;
     }
-/*
-    else if(pY <= canvas.height/5){
-        pY = canvas.height/5;
-        scroll -= velocity.y;
-        //velocity.y = 0;
-        //context.setTransform(1,0,0,1, 0, 0);
-    }else if(pY >= canvas.height - 300 - pImg.height && pY <= canvas.height/5 && scroll >= velocity.y){
-        scroll -= velocity.y;
-        pY = canvas.height - 300 - pImg.height;
+
+
+    //Meteors and other tings
+    if(scroll > 500){
+
     }
-*/
 
 };
 
