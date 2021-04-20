@@ -148,11 +148,11 @@ var update = function () {
 
     if(started) {
       if(velocity.y < 40){
-        velocity.y += 0.3;
+        velocity.y += 0.3;  //gravity
       }
 
       if(velocity.x > 0){
-       velocity.x -= 0.2;
+       velocity.x -= 0.2;   // left to right friction
       }if(velocity.x < 0){
        velocity.x += 0.2;
       }
@@ -169,7 +169,13 @@ var update = function () {
 
       if(scroll >= velocity.y && pY < canvas.height/5 && scroll < 50){  //hit sky after being on ground
         scroll -= velocity.y;
-      }else if(scroll >= 50){          //is in sky
+      }else if(scroll >= 50 && scroll < 500){  //starting to fly up in sky, transition to bottom o screen
+        if(scroll -velocity.y < 33000){
+          scroll -= velocity.y;
+          //Get percentage to move player down by for smooth transition
+          pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
+        }
+      }else if(scroll >= 500){  //is in sky
         if(scroll -velocity.y < 33000){
           scroll -= velocity.y;
         }else{  //hit top o space
