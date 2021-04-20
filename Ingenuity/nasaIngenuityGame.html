@@ -28,6 +28,8 @@ for (var i = 0; i<34000; i++){
 }
 console.log(stars);
 
+var meteors = [];
+
 var pX = 200;
 var pY = canvas.height-canvas.height/5;
 var pWidth = 280;
@@ -141,7 +143,11 @@ var render = function () {
     context.fillRect(0, -1*objBarLow+scroll, canvas.width, 10);
     context.font = "30px Arial";
     context.textAlign = "center";
-    context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
+    if(hoverCount == hoverComplete){
+      context.fillText("Hover Complete! Land Safely To Complete Mission!", canvas.width/2, -1*objective+scroll);
+    }else{
+      context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
+    }
     //Progress Bar
     context.fillStyle = "lightgreen";
     context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
@@ -237,7 +243,9 @@ var update = function () {
 
     //Meteors and other tings
     if(scroll > 500){
+      if(Math.floor(Math.random()*500) == 499){
 
+      }
     }
 
 };
