@@ -174,7 +174,7 @@ var update = function () {
       }else if(scroll >= 50 && scroll < transitionTime){  //starting to fly up in sky, transition to bottom o screen
           scroll -= velocity.y;
           //Get percentage to move player up or down by for smooth transition
-          if(pY > (canvas.height*0.60231921703)){
+          if(pY > (canvas.height*0.60231921703)){  //weird number from pY I liked near bottom / canvas.height (455.9556472918577 / 757)
             pY = (canvas.height*0.60231921703);
           }else{
             pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
