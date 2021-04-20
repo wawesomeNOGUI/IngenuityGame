@@ -38,10 +38,16 @@ var velocity = {
     y: 0
 };
 
+var objective = Math.floor(Math.random() * 33000 + 500); //which height to get to and hover
+var objBarTop = objective + 100;
+var objBarLow = objective - 100;
+var hoverCount = 0;
+var hoverComplete = 600;
+
 var started = false;
 
 var scroll = 0;
-var scrollAmount = 10;
+var transitionTime = 600;
 
 
 //=====Images======
@@ -129,6 +135,19 @@ var render = function () {
 
     }
 
+    //Objective Bars & Text
+    context.fillStyle = "red";
+    context.fillRect(0, -1*objBarTop+scroll, canvas.width, 10);
+    context.fillRect(0, -1*objBarLow+scroll, canvas.width, 10);
+    context.font = "30px Arial";
+    context.textAlign = "center";
+    context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
+    //Progress Bar
+    context.fillStyle = "lightgreen";
+    context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
+    context.lineWidth = 5;
+    context.strokeRect(canvas.width/4, -1*objective+scroll+10, canvas.width/2, 25);
+
 
     //Ingenuity
     //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
@@ -138,11 +157,15 @@ var render = function () {
       context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
+    if(!started){
+      context.fillStyle = "green";
+      context.font = "30px Arial";
+      context.textAlign = "center";
+      context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50);
+    }
 
 
 };
-
-var transitionTime = 600;
 
 var update = function () {
     keyPress1();
@@ -188,6 +211,11 @@ var update = function () {
         }
       }else{
         pY += velocity.y;
+      }
+
+      //Objective hover
+      if(Math.abs(scroll-pY-objective) < 100 && hoverCount < hoverComplete){
+        hoverCount++;
       }
     }
 
