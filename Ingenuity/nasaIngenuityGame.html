@@ -142,6 +142,8 @@ var render = function () {
 
 };
 
+var transitionTime = 600;
+
 var update = function () {
     keyPress1();
     //keyPress2();
@@ -169,13 +171,11 @@ var update = function () {
 
       if(scroll >= velocity.y && pY < canvas.height/5 && scroll < 50){  //hit sky after being on ground
         scroll -= velocity.y;
-      }else if(scroll >= 50 && scroll < 500){  //starting to fly up in sky, transition to bottom o screen
-        if(scroll -velocity.y < 33000){
+      }else if(scroll >= 50 && scroll < transitionTime){  //starting to fly up in sky, transition to bottom o screen
           scroll -= velocity.y;
-          //Get percentage to move player down by for smooth transition
+          //Get percentage to move player up or down by for smooth transition
           pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
-        }
-      }else if(scroll >= 500){  //is in sky
+      }else if(scroll >= transitionTime){  //is in sky
         if(scroll -velocity.y < 33000){
           scroll -= velocity.y;
         }else{  //hit top o space
@@ -186,8 +186,8 @@ var update = function () {
       }
     }
 
-    //Landing Logic
-    if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20){
+    //Landing (Or crash landing) Logic
+    if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20 && scroll < 50){
         pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
         velocity.y = 0;
         velocity.x = 0;
@@ -195,7 +195,7 @@ var update = function () {
         destroyed = true;
         shakeEffect();
         console.log("crash");
-    }else if(pY + pHeight >= canvas.height-canvas.height/5){
+    }else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50){
       pY = canvas.height-canvas.height/5 - pHeight;
       velocity.y = 0;
       velocity.x = 0;
