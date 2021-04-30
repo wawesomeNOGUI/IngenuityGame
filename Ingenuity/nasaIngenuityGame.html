@@ -145,7 +145,11 @@ var render = function () {
     context.fillRect(0, -1*objBarLow+scroll, canvas.width, 10);
     context.font = "30px Arial";
     context.textAlign = "center";
-    context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
+    if(hoverCount == hoverComplete){
+      context.fillText("Hover Complete! Land Safely To Complete Mission!", canvas.width/2, -1*objective+scroll);
+    }else{
+      context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
+    }
     //Progress Bar
     context.fillStyle = "lightgreen";
     context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
@@ -172,6 +176,8 @@ var render = function () {
       context.font = "30px Arial";
       context.textAlign = "center";
       context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
+    
+    context.fillText(meteors.length, 0, 50);
     
 
 
