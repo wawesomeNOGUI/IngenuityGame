@@ -27,7 +27,8 @@ for (var i = 0; i<34000; i++){
   }
 }
 console.log(stars);
-
+    
+//Meteors Array
 var meteors = [];
 
 var pX = 200;
@@ -54,7 +55,8 @@ var transitionTime = 600;
 
 //=====Images======
 var pImg = new Image();
-    pImg.src = './ingenuity.png';
+    //pImg.src = 'https://mrbeastburger.com/wp-content/uploads/dream-burger-feature_480x440.png';
+    pImg.src = './ingenuity.png'
 var pImg2 = new Image();
     pImg2.src = './ingenuity2.png';
 var pImg3 = new Image();
@@ -143,16 +145,18 @@ var render = function () {
     context.fillRect(0, -1*objBarLow+scroll, canvas.width, 10);
     context.font = "30px Arial";
     context.textAlign = "center";
-    if(hoverCount == hoverComplete){
-      context.fillText("Hover Complete! Land Safely To Complete Mission!", canvas.width/2, -1*objective+scroll);
-    }else{
-      context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
-    }
+    context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
     //Progress Bar
     context.fillStyle = "lightgreen";
     context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
     context.lineWidth = 5;
     context.strokeRect(canvas.width/4, -1*objective+scroll+10, canvas.width/2, 25);
+    
+    //Draw Meteors
+    for (var i = 0; i < meteors.length; i++){
+      context.fillStyle = "red";
+      context.fillRect(meteors[i][0], meteors[i][1], 10, 10);
+    }
 
 
     //Ingenuity
@@ -163,12 +167,12 @@ var render = function () {
       context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
-    if(!started){
+    
       context.fillStyle = "green";
       context.font = "30px Arial";
       context.textAlign = "center";
-      context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50);
-    }
+      context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
+    
 
 
 };
@@ -243,9 +247,17 @@ var update = function () {
 
     //Meteors and other tings
     if(scroll > 500){
-      if(Math.floor(Math.random()*500) == 499){
-
-      }
+        if(Math.floor(Math.random()*400) == 100){
+          meteors.push([Math.floor(Math.random()*canvas.width+10), -50]);  
+        }
+                       
+        for(var i = 0; i<meteors.length; i++){
+          meteors[i][1] += 5;
+            
+          if(meteors[i][1] > canvas.height){
+            meteors.splice(i, 1);   
+          }
+        }
     }
 
 };
