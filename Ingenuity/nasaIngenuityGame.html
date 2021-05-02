@@ -31,10 +31,10 @@ console.log(stars);
 //Meteors Array
 var meteors = [];
 
-var pX = 200;
-var pY = canvas.height-canvas.height/5;
 var pWidth = 280;
 var pHeight = 180;
+var pX = 200;
+var pY = canvas.height-canvas.height/5 - pHeight;
 var pHealth = 5;
 var destroyed = false;
 var velocity = {
@@ -49,6 +49,7 @@ var hoverCount = 0;
 var hoverComplete = 600;
 
 var started = false;
+var gameOver = false;
 
 var scroll = 0;
 var transitionTime = 600;
@@ -182,14 +183,22 @@ var render = function () {
       context.fillRect(i*30+10, 15, 25, 25);
     }
 
+    //Game Over Screen
+    if(gameOver){
+      context.fillStyle = "#222222F0";
+      context.fillRect(0,0,canvas.width,canvas.height);
 
+      context.fillStyle = "red";
+      context.font = "50px Arial bold";
+      context.textAlign = "center";
+      context.fillText("Game Over", canvas.width/2, canvas.height/2.5);
+      context.fillText("Press Any Button To Try Again", canvas.width/2, canvas.height/2);
+    }else{
       context.fillStyle = "green";
-      context.font = "30px Arial";
+      context.font = "30px Arial bold";
       context.textAlign = "center";
       context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
-
-    //context.fillText(meteors.length, 0, 50);
-
+    }
 
 
 };
@@ -244,59 +253,62 @@ var update = function () {
       if(Math.abs(scroll-pY-objective) < 100 && hoverCount < hoverComplete){
         hoverCount++;
       }
-    }
 
-    //Landing (Or crash landing) Logic
-    if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20 && scroll < 50){
-        pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
+
+      //Landing (Or crash landing) Logic
+      if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20 && scroll < 50){
+          pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
+          velocity.y = 0;
+          velocity.x = 0;
+          velocity.y -= 15;
+          destroyed = true;
+          pHealth = 0;
+          shakeEffect();
+          gameOver = true;
+          console.log("crash");
+      }else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50){
+        pY = canvas.height-canvas.height/5 - pHeight;
         velocity.y = 0;
         velocity.x = 0;
-        velocity.y -= 15;
-        destroyed = true;
-        pHealth = 0;
-        shakeEffect();
-        console.log("crash");
-    }else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50){
-      pY = canvas.height-canvas.height/5 - pHeight;
-      velocity.y = 0;
-      velocity.x = 0;
-    }
+      }
 
 
-    //Meteors and other tings
-    if(scroll > 500){
+      //Meteors and other tings
+      if(scroll > 500){
         //Spawn Meteors
         if(Math.floor(Math.random()*50) == 0 && meteors.length < 5){
           //x, y, y-velocity
           meteors.push([Math.floor(Math.random()*canvas.width+10), -50, Math.floor(Math.random()*10+1)]);
         }
+      }
 
-        //Update Meteors / Check for collison
-        for(var i = 0; i<meteors.length; i++){
-          //y velocity
-          meteors[i][2] += 0.5;
-          meteors[i][1] += meteors[i][2];//y value
+      //Update Meteors / Check for collison
+      for(var i = 0; i<meteors.length; i++){
+        //y velocity
+        meteors[i][2] += 0.5;
+        meteors[i][1] += meteors[i][2];//y value
 
-          //Collison
-          if(Math.abs(meteors[i][1] - pY-pY/2) < pHeight/1.5 && Math.abs(meteors[i][0] - pX-pWidth/1.8) < pWidth/2.8){
-            if(pHealth>1){
-              pHealth--;
-              meteors.splice(i, 1);
-              shakeEffect();
-              continue;
-            }else{
-              destroyed = true;
-              pHealth--;
-              meteors.splice(i, 1);
-              shakeEffect();
-              continue;
-            }
-          }
-
-          if(meteors[i][1] > canvas.height + meteorImg.height){
+        //Collison
+        if(Math.abs(meteors[i][1] - pY-pY/2) < pHeight/1.5 && Math.abs(meteors[i][0] - pX-pWidth/1.8) < pWidth/2.8){
+          if(pHealth>1){
+            pHealth--;
             meteors.splice(i, 1);
+            shakeEffect();
+            continue;
+          }else{
+            destroyed = true;
+            pHealth--;
+            meteors.splice(i, 1);
+            shakeEffect();
+            gameOver = true;
+            continue;
           }
         }
+
+        if(meteors[i][1] > canvas.height + meteorImg.height){
+          meteors.splice(i, 1);
+        }
+      }
     }
 
 };
@@ -311,24 +323,12 @@ var step = function () {
 
 
 function keyPress1() {
-  for  (var key in keysDown) {
-     var value = Number(key);
-        if (value == 68 || value == 39) {
-          if(velocity.x < 100 && started){
-            velocity.x += 2;
-          }
-          animationCounter++;
-          if(animationCounter == 2){
-            if(whichPic < pImgArr.length-1){
-              whichPic++;
-            }else{
-              whichPic = 0;
-            }
-            animationCounter = 0;
-          }
-        } else if (value == 65 || value == 37) {
-            if(velocity.x > -100 && started){
-              velocity.x -= 2;
+  if(!gameOver){
+    for (var key in keysDown) {
+       var value = Number(key);
+          if (value == 68 || value == 39) {
+            if(velocity.x < 100 && started){
+              velocity.x += 2;
             }
             animationCounter++;
             if(animationCounter == 2){
@@ -339,27 +339,42 @@ function keyPress1() {
               }
               animationCounter = 0;
             }
-        } else if (value==87 || value == 38) {
-          started = true;
-          if(velocity.y > -15){
-            velocity.y -= 2.5;
-          }
-          animationCounter++;
-          if(animationCounter == 2){
-            if(whichPic < pImgArr.length-1){
-              whichPic++;
-            }else{
-              whichPic = 0;
+          } else if (value == 65 || value == 37) {
+              if(velocity.x > -100 && started){
+                velocity.x -= 2;
+              }
+              animationCounter++;
+              if(animationCounter == 2){
+                if(whichPic < pImgArr.length-1){
+                  whichPic++;
+                }else{
+                  whichPic = 0;
+                }
+                animationCounter = 0;
+              }
+          } else if (value==87 || value == 38) {
+            started = true;
+            if(velocity.y > -15){
+              velocity.y -= 2.5;
             }
-            animationCounter = 0;
-          }
-          //console.log(scroll)
-        } else if (value==83) {
+            animationCounter++;
+            if(animationCounter == 2){
+              if(whichPic < pImgArr.length-1){
+                whichPic++;
+              }else{
+                whichPic = 0;
+              }
+              animationCounter = 0;
+            }
+            //console.log(scroll)
+          } else if (value==83) {
 
-} else {
-            //this.paddle.move(0, 0);
-        }
-    }
+          } else {
+              //this.paddle.move(0, 0);
+          }
+      }
+  }
+
 };
 
 
@@ -397,6 +412,17 @@ animate(step);
 
 window.addEventListener("keydown", function (event) {
     keysDown[event.keyCode] = true;
+    if(gameOver){
+      gameOver = false;
+      destroyed = false;
+      pHealth = 5;
+      pX = 200;
+      pY = canvas.height-canvas.height/5 - pHeight;
+      //get new objective
+      objective = Math.floor(Math.random() * 33000 + 500); //which height to get to and hover
+      objBarTop = objective + 100;
+      objBarLow = objective - 100;
+    }
 });
 
 
