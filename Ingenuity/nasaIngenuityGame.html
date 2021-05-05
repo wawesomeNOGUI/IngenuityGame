@@ -424,6 +424,10 @@ window.addEventListener("keydown", function (event) {
       pHealth = 5;
       pX = 200;
       pY = canvas.height-canvas.height/5 - pHeight;
+      velocity.x = 0;
+      velocity.y = 0;
+      scroll = 0;
+      meteors = [];
       //get new objective
       objective = Math.floor(Math.random() * 33000 + 500); //which height to get to and hover
       objBarTop = objective + 100;
