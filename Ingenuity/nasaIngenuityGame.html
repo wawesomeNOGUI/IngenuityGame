@@ -50,6 +50,7 @@ var hoverComplete = 600;
 
 var started = false;
 var gameOver = false;
+var gameWon = false;
 
 var scroll = 0;
 var transitionTime = 600;
@@ -192,7 +193,7 @@ var render = function () {
       context.font = "50px Arial bold";
       context.textAlign = "center";
       context.fillText("Game Over", canvas.width/2, canvas.height/2.5);
-      context.fillText("Press Any Button To Try Again", canvas.width/2, canvas.height/2);
+      context.fillText("Press Enter To Try Again", canvas.width/2, canvas.height/2);
     }else{
       context.fillStyle = "green";
       context.font = "30px Arial bold";
@@ -270,6 +271,12 @@ var update = function () {
         pY = canvas.height-canvas.height/5 - pHeight;
         velocity.y = 0;
         velocity.x = 0;
+
+        //Game Won?
+        if(hoverCount == hoverComplete){
+          gameWon = true;
+          console.log("Yay!");
+        }
       }
 
 
@@ -323,7 +330,7 @@ var step = function () {
 
 
 function keyPress1() {
-  if(!gameOver){
+  if(!gameOver && !gameWon){
     for (var key in keysDown) {
        var value = Number(key);
           if (value == 68 || value == 39) {
@@ -374,7 +381,6 @@ function keyPress1() {
           }
       }
   }
-
 };
 
 
@@ -412,7 +418,7 @@ animate(step);
 
 window.addEventListener("keydown", function (event) {
     keysDown[event.keyCode] = true;
-    if(gameOver){
+    if((gameOver || gameWon) && event.keyCode == 13){
       gameOver = false;
       destroyed = false;
       pHealth = 5;
@@ -428,7 +434,7 @@ window.addEventListener("keydown", function (event) {
 
 window.addEventListener("keyup", function (event) {
     delete keysDown[event.keyCode];
-
+/*
     //87 player 1 (W)
     if (event.keyCode == 87){
 
@@ -438,6 +444,7 @@ window.addEventListener("keyup", function (event) {
     if(event.keyCode == 38) {
 
     }
+*/
 });
 
 window.addEventListener("resize", function(e){
