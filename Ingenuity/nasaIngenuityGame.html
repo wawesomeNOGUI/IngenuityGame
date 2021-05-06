@@ -170,14 +170,6 @@ var render = function () {
     }
 
 
-    //Ingenuity
-    //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
-    if(destroyed){
-      context.drawImage(explodeImg, pX, pY, pWidth, pHeight);
-    }else{
-      context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
-    }
-
     //Ingenuity Health
     context.fillStyle = "red";
     for(var i = 0; i<pHealth; i++){
@@ -196,7 +188,7 @@ var render = function () {
 
     //Game Over Screen
     if(gameOver){
-      context.fillStyle = "#222222F0";
+      context.fillStyle = "#222222D0";
       context.fillRect(0,0,canvas.width,canvas.height);
 
       context.fillStyle = "red";
@@ -209,6 +201,14 @@ var render = function () {
       context.font = "30px Arial bold";
       context.textAlign = "center";
       context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
+    }
+    
+    //Ingenuity
+    //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
+    if(destroyed){
+      context.drawImage(explodeImg, pX, pY, pWidth, pHeight);
+    }else{
+      context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
 
@@ -275,7 +275,7 @@ var update = function () {
           destroyed = true;
           pHealth = 0;
           shakeEffect();
-          gameOver = true;
+          setTimeout(function(){gameOver = true;}, 1000);
           console.log("crash");
       }else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50){
         pY = canvas.height-canvas.height/5 - pHeight;
@@ -317,7 +317,7 @@ var update = function () {
             pHealth--;
             meteors.splice(i, 1);
             shakeEffect();
-            gameOver = true;
+            setTimeout(function(){gameOver = true;}, 1000);
             continue;
           }
         }
