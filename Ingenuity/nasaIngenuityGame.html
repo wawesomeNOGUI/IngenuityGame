@@ -35,7 +35,7 @@ var pWidth = 280;
 var pHeight = 180;
 var pX = 200;
 var pY = canvas.height-canvas.height/5 - pHeight;
-var pHealth = 5;
+var pHealth = 500;
 var destroyed = false;
 var velocity = {
     x: 0,
@@ -183,6 +183,16 @@ var render = function () {
     for(var i = 0; i<pHealth; i++){
       context.fillRect(i*30+10, 15, 25, 25);
     }
+
+    //Altimiter
+    context.fillStyle = "#00FF00";
+    context.fillRect(15, canvas.height/5, 5, canvas.height/2); //vertical bar
+    context.fillStyle = "#FF0000";
+    context.fillRect(8, -1*(canvas.height/2)/33000 * (objective + pY) + canvas.height/1.46, 20, 8);  //objective
+    context.fillStyle = "#00FF00";
+    context.fillRect(8, -1*(canvas.height/2)/33000 * (scroll + pY) + canvas.height/1.45, 20, 8); //player
+
+
 
     //Game Over Screen
     if(gameOver){
