@@ -311,14 +311,15 @@ var update = function () {
         //Spawn Meteors
         if(Math.floor(Math.random()*50) == 0 && meteors.length < 5){
           //x, y, y-velocity
-          meteors.push([Math.floor(Math.random()*canvas.width+10), -50, Math.floor(Math.random()*10+1)]);
+          meteors.push([Math.floor(Math.random()*canvas.width+10), -50, Math.floor(Math.random()*1)]);
         }
       }
 
       //Update Meteors / Check for collison
       for(var i = 0; i<meteors.length; i++){
         //y velocity
-        meteors[i][2] += 0.5;
+        meteors[i][2] += 0.5;  //regular acceleration
+        meteors[i][2] -= velocity.y/10; //also add on player's velocity
         meteors[i][1] += meteors[i][2];//y value
 
         //Collison
