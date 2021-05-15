@@ -42,7 +42,7 @@ var velocity = {
     y: 0
 };
 
-var objective = Math.floor(Math.random() * 33000 + 500); //which height to get to and hover
+var objective = Math.floor(Math.random() * 20000 + 500); //which height to get to and hover
 var objBarTop = objective + 100;
 var objBarLow = objective - 100;
 var hoverCount = 0;
@@ -51,6 +51,9 @@ var hoverComplete = 600;
 var started = false;
 var gameOver = false;
 var gameWon = false;
+var gameWinInterval;
+var winColorAlpha = 1;  //Max alpha, no transparency (1 = 100%)
+var winColor = "rgba(255,255,255," + winColorAlpha + ")";
 
 var scroll = 0;
 var transitionTime = 600;
@@ -70,10 +73,6 @@ var pImgArr = [pImg, pImg2, pImg3, pImg2];
 var animationCounter = 0;
 var whichPic = 0;
 
-
-var p2Img = new Image();
-    p2Img.src = 'https://www.tradingcardmint.com/wp-content/uploads/2017/07/IOC-004-Big-Koala-COMMON.jpg';
-
 var explodeImg = new Image();
     explodeImg.src = './explodeImg.png';
 
@@ -81,7 +80,10 @@ var meteorImg = new Image();
     meteorImg.src = './meteor.png';
 
 var mars = new Image();
-    mars.src = './mars.png'
+    mars.src = './mars.png';
+
+var winPic = new Image();
+    winPic.src = './winPic.jpeg';
 
 //=================
 
@@ -113,6 +115,14 @@ function shakeEffect(){
    }
 }
 
+function gameWinAnimation(){
+  if(winColorAlpha < 0){
+    clearInterval(gameWinInterval);
+  }
+  //console.log(winColor);
+  winColorAlpha -= 0.01;  //Alpha value is between 0 and 1
+  winColor = "rgba(255,255,255," + winColorAlpha + ")";
+}
 
 var render = function () {
     //context.fillStyle = "#FF00FF";
@@ -157,7 +167,7 @@ var render = function () {
       context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
     }
     //Progress Bar
-    context.fillStyle = "lightgreen";
+    context.fillStyle = "#00FF00";
     context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
     context.lineWidth = 5;
     context.strokeRect(canvas.width/4, -1*objective+scroll+10, canvas.width/2, 25);
@@ -202,7 +212,7 @@ var render = function () {
       context.textAlign = "center";
       context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
     }
-    
+
     //Ingenuity
     //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
     if(destroyed){
@@ -211,7 +221,12 @@ var render = function () {
       context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
-
+    //Game Won Drawing
+    if(gameWon){
+      context.drawImage(winPic, 0, 0, canvas.width, canvas.height);
+      context.fillStyle = winColor;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
 };
 
 var update = function () {
@@ -283,8 +298,9 @@ var update = function () {
         velocity.x = 0;
 
         //Game Won?
-        if(hoverCount == hoverComplete){
+        if(hoverCount == hoverComplete && gameWinInterval == undefined){ //To make sure the interval for animation is only set once
           gameWon = true;
+          gameWinInterval = setInterval(gameWinAnimation, 1000/60);//60 fps
           console.log("Yay!");
         }
       }
@@ -440,26 +456,16 @@ window.addEventListener("keydown", function (event) {
       meteors = [];
       hoverCount = 0;
       //get new objective
-      objective = Math.floor(Math.random() * 33000 + 500); //which height to get to and hover
+      objective = Math.floor(Math.random() * 20000 + 500); //which height to get to and hover
       objBarTop = objective + 100;
       objBarLow = objective - 100;
+      winColorAlpha = 1;
     }
 });
 
 
 window.addEventListener("keyup", function (event) {
     delete keysDown[event.keyCode];
-/*
-    //87 player 1 (W)
-    if (event.keyCode == 87){
-
-    }
-
-    //38 player 2 (up arrow)
-    if(event.keyCode == 38) {
-
-    }
-*/
 });
 
 window.addEventListener("resize", function(e){
