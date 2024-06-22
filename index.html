@@ -18,10 +18,10 @@ context.imageSmoothingEnabled = true;
 
 //Make Stars
 var stars = [];
-for (var i = 0; i<34000; i++){
-  if(Math.floor(Math.random() * 100) == 0){
+for (var i = 0; i < 34000; i++) {
+  if (Math.floor(Math.random() * 100) == 0) {
     stars.push([ Math.floor(Math.random() * canvas.width), -1*Math.floor(Math.random() * canvas.height + i)]);
-  }else{
+  } else {
     stars.push([-1,-1]);
   }
 }
@@ -95,8 +95,8 @@ var shakeAmount = 5;
 var counter = 0;
 var shakeInt;
 var shaking = false;
-function shake(){
-    if(counter == shakes){
+function shake() {
+    if (counter == shakes) {
         clearInterval(shakeInt);
         context.setTransform(1,0,0,1,0,0);
         shaking = false;
@@ -109,18 +109,18 @@ function shake(){
     counter++;
 }
 
-function shakeEffect(){
-   if(!shaking){  //e = horizontal translation
+function shakeEffect() {
+   if (!shaking) {  //e = horizontal translation
        shakeInt = setInterval(shake, 10);
        shaking = true;
    }
 }
 
-function gameWinAnimation(){
-  if(winColorAlpha < 0){
+function gameWinAnimation() {
+  if (winColorAlpha < 0) {
     winTextAlpha += 0.01;  //Alpha value is between 0 and 1
     winTextColor = "rgba(27, 224, 79," + winTextAlpha + ")";
-    if(winTextAlpha > 1){
+    if (winTextAlpha > 1) {
       clearInterval(gameWinInterval);
     }
   }
@@ -135,7 +135,7 @@ var render = function () {
 
     // Create sky gradient
     //var grd = context.createLinearGradient(canvas.width/2, canvas.height+scroll, canvas.width/2, -1025);
-    var grd = context.createRadialGradient(canvas.width/2, canvas.height+scroll, canvas.width, canvas.width/2, canvas.height+scroll, 34700);
+    var grd = context.createRadialGradient(canvas.width/2, canvas.height + scroll, canvas.width, canvas.width/2, canvas.height + scroll, 34700);
     grd.addColorStop(0, "#FBE5C3");
     grd.addColorStop(0.5, "#FCB398");
     grd.addColorStop(0.9, "#7d3e10");
@@ -150,9 +150,9 @@ var render = function () {
 
     //Draw Stars
     context.fillStyle = "#FFFFFF";
-    if(scroll>canvas.height*2){
-      for(var i = Math.floor(scroll)-canvas.height*2; i<Math.floor(scroll)+canvas.height && Math.floor(scroll)+canvas.height < stars.length; i++){
-        if(stars[i][0] != -1){
+    if (scroll > canvas.height*2) {
+      for (var i = Math.floor(scroll) - canvas.height*2; i < Math.floor(scroll) + canvas.height && Math.floor(scroll) + canvas.height < stars.length; i++) {
+        if (stars[i][0] != -1) {
           context.fillRect(stars[i][0], stars[i][1]+Math.floor(scroll), 5, 5);
           //console.log(stars[Math.floor(i)][0])
         }
@@ -162,33 +162,32 @@ var render = function () {
 
     //Objective Bars & Text
     context.fillStyle = "red";
-    context.fillRect(0, -1*objBarTop+scroll, canvas.width, 10);
-    context.fillRect(0, -1*objBarLow+scroll, canvas.width, 10);
+    context.fillRect(0, -1*objBarTop + scroll, canvas.width, 10);
+    context.fillRect(0, -1*objBarLow + scroll, canvas.width, 10);
     context.font = "30px Arial";
     context.textAlign = "center";
-    if(hoverCount == hoverComplete){
-      context.fillText("Hover Complete! Land Safely To Complete Mission!", canvas.width/2, -1*objective+scroll);
-    }else{
+    if (hoverCount == hoverComplete) {
+      context.fillText("Hover Complete! Land Safely To Complete Mission!", canvas.width/2, -1*objective + scroll);
+    } else {
       context.fillText("Altitude Reached! Keep hovering!", canvas.width/2, -1*objective+scroll);
     }
     //Progress Bar
     context.fillStyle = "#00FF00";
-    context.fillRect(canvas.width/4, -1*objective+scroll+10, (canvas.width/2/hoverComplete) * hoverCount, 25);
+    context.fillRect(canvas.width/4, -1*objective + scroll + 10, (canvas.width/2/hoverComplete) * hoverCount, 25);
     context.lineWidth = 5;
-    context.strokeRect(canvas.width/4, -1*objective+scroll+10, canvas.width/2, 25);
+    context.strokeRect(canvas.width/4, -1*objective + scroll + 10, canvas.width/2, 25);
 
     //Draw Meteors
-    for (var i = 0; i < meteors.length; i++){
+    for (var i = 0; i < meteors.length; i++) {
       //context.fillStyle = "red";
       //context.fillRect(meteors[i][0], meteors[i][1], 10, 10);
-      context.drawImage(meteorImg, meteors[i][0] - pWidth/4, meteors[i][1]-pHeight/2, pWidth/2, pHeight/2);
+      context.drawImage(meteorImg, meteors[i][0] - pWidth/4, meteors[i][1] - pHeight/2, pWidth/2, pHeight/2);
     }
-
 
     //Ingenuity Health
     context.fillStyle = "red";
-    for(var i = 0; i<pHealth; i++){
-      context.fillRect(i*30+10, 15, 25, 25);
+    for (var i = 0; i < pHealth; i++) {
+      context.fillRect(i*30 + 10, 15, 25, 25);
     }
 
     //Altimiter
@@ -199,10 +198,8 @@ var render = function () {
     context.fillStyle = "#00FF00";
     context.fillRect(8, -1*(canvas.height/2)/33000 * (scroll + pY) + canvas.height/1.44, 20, 8); //player
 
-
-
     //Game Over Screen
-    if(gameOver){
+    if (gameOver) {
       context.fillStyle = "#222222D0";
       context.fillRect(0,0,canvas.width,canvas.height);
 
@@ -211,23 +208,23 @@ var render = function () {
       context.textAlign = "center";
       context.fillText("Game Over", canvas.width/2, canvas.height/2.5);
       context.fillText("Press Enter To Try Again", canvas.width/2, canvas.height/2);
-    }else{
+    } else {
       context.fillStyle = "green";
       context.font = "30px Arial bold";
       context.textAlign = "center";
-      context.fillText("Fly up to altitude: "+objective+"m, hover, and land back safely!", canvas.width/2, 50+scroll);
+      context.fillText("Fly up to altitude: " + objective + "m, hover, and land back safely!", canvas.width/2, 50 + scroll);
     }
 
     //Ingenuity
     //context.drawImage(pImg, 0, 0, pImg.width/2, pImg.height/2, pX, pY, 100, 100 );
-    if(destroyed){
+    if (destroyed) {
       context.drawImage(explodeImg, pX, pY, pWidth, pHeight);
-    }else{
+    } else {
       context.drawImage(pImgArr[whichPic], pX, pY, pWidth, pHeight);
     }
 
     //Game Won Drawing
-    if(gameWon){
+    if (gameWon) {
       context.drawImage(winPic, 0, 0, canvas.width, canvas.height);
       context.fillStyle = winColor;
       context.fillRect(0, 0, canvas.width, canvas.height);
@@ -246,56 +243,60 @@ var update = function () {
     keyPress1();
     //keyPress2();
 
-    if(started) {
-      if(velocity.y < 40){
+    if (started) {
+      if (velocity.y < 40) {
         velocity.y += 0.3;  //gravity
       }
 
-      if(velocity.x > 0){
-       velocity.x -= 0.2;   // left to right friction
-      }if(velocity.x < 0){
-       velocity.x += 0.2;
+      if (velocity.x > 0) {
+        velocity.x -= 0.2;   // left to right friction
+      }else if(velocity.x < 0){
+        velocity.x += 0.2;
       }
+
+      if (Math.abs(velocity.x) < 0.2) {
+        velocity.x = 0;
+      }
+
       //Resolve movement
       pX += velocity.x;
 
-      if(pX <= 0){
+      if (pX <= 0) {
         pX = 0;
         velocity.x = 0;
-      }else if (pX >= canvas.width- pWidth ){
-  	     pX = canvas.width- pWidth;
+      } else if (pX >= canvas.width - pWidth ) {
+  	     pX = canvas.width - pWidth;
          velocity.x = 0;
       }
 
-      if(scroll >= velocity.y && pY < canvas.height/5 && scroll < 50){  //hit sky after being on ground
+      if (scroll >= velocity.y && pY < canvas.height/5 && scroll < 50) {  //hit sky after being on ground
         scroll -= velocity.y;
-      }else if(scroll >= 50 && scroll < transitionTime){  //starting to fly up in sky, transition to bottom o screen
+      } else if (scroll >= 50 && scroll < transitionTime) {  //starting to fly up in sky, transition to bottom o screen
           scroll -= velocity.y;
           //Get percentage to move player up or down by for smooth transition
-          if(pY > (canvas.height*0.60231921703)){  //weird number from pY I liked near bottom / canvas.height (455.9556472918577 / 757)
+          if (pY > (canvas.height*0.60231921703)) {  //weird number from pY I liked near bottom / canvas.height (455.9556472918577 / 757)
             pY = (canvas.height*0.60231921703);
-          }else{
+          } else {
             pY += (velocity.y*-1/ (4*canvas.height/5)) * scroll;
           }
 
-      }else if(scroll >= transitionTime){  //is in sky
-        if(scroll -velocity.y < 33000){
+      } else if(scroll >= transitionTime) {  //is in sky
+        if (scroll -velocity.y < 33000) {
           scroll -= velocity.y;
-        }else{  //hit top o space
+        } else {  //hit top o space
           velocity.y = 15;
         }
-      }else{
+      } else {
         pY += velocity.y;
       }
 
       //Objective hover
-      if(Math.abs(scroll-pY-objective) < 100 && hoverCount < hoverComplete){
+      if (Math.abs(scroll-pY-objective) < 100 && hoverCount < hoverComplete) {
         hoverCount++;
       }
 
-
       //Landing (Or crash landing) Logic
-      if(pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20 && scroll < 50){
+      if (pY + pHeight >= canvas.height-canvas.height/5 && velocity.y > 20 && scroll < 50) {
           pY = canvas.height-canvas.height/5 - pHeight;  //bottom fifth of the screen
           velocity.y = 0;
           velocity.x = 0;
@@ -305,13 +306,13 @@ var update = function () {
           shakeEffect();
           setTimeout(function(){gameOver = true;}, 1000);
           console.log("crash");
-      }else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50){
+      } else if(pY + pHeight >= canvas.height-canvas.height/5 && scroll < 50) {
         pY = canvas.height-canvas.height/5 - pHeight;
         velocity.y = 0;
         velocity.x = 0;
 
         //Game Won?
-        if(hoverCount == hoverComplete && gameWinInterval == undefined){ //To make sure the interval for animation is only set once
+        if (hoverCount == hoverComplete && !gameOver && gameWinInterval == undefined) { //To make sure the interval for animation is only set once
           gameWon = true;
           gameWinInterval = setInterval(gameWinAnimation, 1000/60);//60 fps
           console.log("Yay!");
@@ -320,29 +321,29 @@ var update = function () {
 
 
       //Meteors and other tings
-      if(scroll > 500){
+      if (scroll > 500) {
         //Spawn Meteors
-        if(Math.floor(Math.random()*50) == 0 && meteors.length < 5){
+        if (Math.floor(Math.random()*50) == 0 && meteors.length < 5) {
           //x, y, y-velocity
           meteors.push([Math.floor(Math.random()*canvas.width+10), -50, Math.floor(Math.random()*1)]);
         }
       }
 
       //Update Meteors / Check for collison
-      for(var i = 0; i<meteors.length; i++){
+      for (var i = 0; i<meteors.length; i++) {
         //y velocity
         meteors[i][2] += 0.4;  //regular acceleration
         meteors[i][2] -= velocity.y/15; //also add on player's velocity
         meteors[i][1] += meteors[i][2];//y value
 
         //Collison
-        if(Math.abs(meteors[i][1] - pY-pY/2) < pHeight/1.5 && Math.abs(meteors[i][0] - pX-pWidth/1.8) < pWidth/2.8){
-          if(pHealth>1){
+        if (Math.abs(meteors[i][1] - pY-pY/2) < pHeight/1.5 && Math.abs(meteors[i][0] - pX-pWidth/1.8) < pWidth/2.8) {
+          if (pHealth > 1) {
             pHealth--;
             meteors.splice(i, 1);
             shakeEffect();
             continue;
-          }else{
+          } else {
             destroyed = true;
             pHealth--;
             meteors.splice(i, 1);
@@ -352,7 +353,7 @@ var update = function () {
           }
         }
 
-        if(meteors[i][1] > canvas.height + meteorImg.height){
+        if (meteors[i][1] > canvas.height + meteorImg.height) {
           meteors.splice(i, 1);
         }
       }
@@ -368,7 +369,7 @@ var step = function () {
 setInterval(step, 16);
 
 function keyPress1() {
-  if(!gameOver && !gameWon){
+  if (!gameOver && !gameWon) {
     for (var key in keysDown) {
        var value = Number(key);
           if (value == 68 || value == 39) {
@@ -385,28 +386,28 @@ function keyPress1() {
               animationCounter = 0;
             }
           } else if (value == 65 || value == 37) {
-              if(velocity.x > -100 && started){
+              if (velocity.x > -100 && started) {
                 velocity.x -= 2;
               }
               animationCounter++;
-              if(animationCounter == 2){
-                if(whichPic < pImgArr.length-1){
+              if (animationCounter == 2) {
+                if (whichPic < pImgArr.length-1) {
                   whichPic++;
-                }else{
+                } else {
                   whichPic = 0;
                 }
                 animationCounter = 0;
               }
           } else if (value==87 || value == 38) {
             started = true;
-            if(velocity.y > -15){
+            if (velocity.y > -15) {
               velocity.y -= 2.5;
             }
             animationCounter++;
-            if(animationCounter == 2){
-              if(whichPic < pImgArr.length-1){
+            if (animationCounter == 2) {
+              if (whichPic < pImgArr.length-1) {
                 whichPic++;
-              }else{
+              } else {
                 whichPic = 0;
               }
               animationCounter = 0;
@@ -423,7 +424,7 @@ function keyPress1() {
 
 window.addEventListener("keydown", function (event) {
     keysDown[event.keyCode] = true;
-    if((gameOver || gameWon) && event.keyCode == 13){
+    if ((gameOver || gameWon) && event.keyCode == 13) {
       gameOver = false;
       gameWon = false;
       gameWinInterval = undefined;
